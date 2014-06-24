@@ -1,7 +1,6 @@
 package edu.vuum.mocca;
 
 import static org.junit.Assert.fail;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +36,6 @@ public class PalantirManagerUnitTest {
      * Total number of active Threads.
      */
     static volatile long mMaxActiveThreads = 0;
-
-    /**
-     * Keep track of whether a runtime exception occurs.
-     */
-    boolean mFailed = false;
 
     /**
      * Count of the number of Active Threads.
@@ -227,33 +221,14 @@ public class PalantirManagerUnitTest {
             // Start all the Threads that Middle-Earth Beings use to
             // gaze into the Palantir.
             for (ListIterator<Thread> iterator = palantirUsers.listIterator(); 
-                 iterator.hasNext();
-                 ) {
-                Thread t = iterator.next();
-                // Catch runtime exceptions and induce a JUnit test
-                // failure.
-                t.setUncaughtExceptionHandler
-                    (new Thread.UncaughtExceptionHandler() {
-                            public void uncaughtException(Thread t,
-                                                          Throwable e) {
-                            System.out.println(t 
-                                               + " throws exception: " 
-                                               + e);
-                            mFailed = true;
-                        }
-                    });
-                t.start();
-            }
+                 iterator.hasNext();)
+                iterator.next().start();
 
             // Barrier synchronization that waits for all the Threads
             // to exit.
-            for (ListIterator<Thread> iterator = palantirUsers.listIterator(); 
-                 iterator.hasNext();
-                 )
+            for (ListIterator<Thread> iterator = palantirUsers.listIterator(); iterator
+                     .hasNext();)
                 iterator.next().join();
-
-            // Make sure we haven't failed.
-            assertFalse(mFailed);
 
             if (diagnosticsEnabled)            
                 System.out.println("Finishing PalantirManagerTest");

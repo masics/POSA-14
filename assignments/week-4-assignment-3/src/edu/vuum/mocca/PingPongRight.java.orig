@@ -20,7 +20,7 @@ public class PingPongRight {
     /**
      * Latch that will be decremented each time a thread exits.
      */
-    public static CountDownLatch mLatch = null;
+    public static CountDownLatch mLatch = new CountDownLatch(2);
 
     /**
      * @class PlayPingPongThread

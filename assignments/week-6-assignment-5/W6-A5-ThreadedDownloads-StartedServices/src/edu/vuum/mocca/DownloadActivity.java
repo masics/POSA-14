@@ -2,8 +2,10 @@ package edu.vuum.mocca;
 
 import java.lang.ref.WeakReference;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -65,7 +67,7 @@ public class DownloadActivity extends DownloadBase {
     	
     	// Handle any messages that get sent to this Handler
     	@Override
-		public void handleMessage(Message msg) {
+    	public void handleMessage(Message msg) {
     		
             // Get an actual reference to the DownloadActivity
             // from the WeakReference.
@@ -78,6 +80,14 @@ public class DownloadActivity extends DownloadBase {
                 // bitmap that's been downloaded and returned to
                 // the DownloadActivity as a pathname who's Bundle
             	// key is defined by DownloadUtils.PATHNAME_KEY
+            	Bundle data = msg.getData();
+            	String pathname = data.getString(DownloadUtils.PATHNAME_KEY);
+                if (pathname == null){
+                	Toast.makeText(activity,
+                            "Some error occur during downloading",
+                            Toast.LENGTH_SHORT).show();
+                }
+                activity.displayBitmap(pathname);
             }
     	}
     }
@@ -107,6 +117,7 @@ public class DownloadActivity extends DownloadBase {
             // TODO - You fill in here to start the
             // DownloadIntentService with the appropriate Intent
             // returned from the makeIntent() factory method.
+        	startService(DownloadIntentService.makeIntent(this, handler, getUrlString()));
 
             which = "Starting IntentService";
             break;
@@ -116,6 +127,7 @@ public class DownloadActivity extends DownloadBase {
             // ThreadPoolDownloadService with the appropriate Intent
             // returned from the makeIntent() factory method.
 
+        	startService(ThreadPoolDownloadService.makeIntent(this, handler, getUrlString()));
             which = "Starting ThreadPoolDownloadService";
             break;
         

@@ -11,8 +11,8 @@ import java.util.HashMap;
 public class PlatformStrategyFactory 
 {
     /** 
-     * This interface uses the Strategy pattern to create @a
-     * PlatformStrategy implementations at runtime.
+     * This interface uses the Strategy pattern to create @a PlatformStrategy
+     * implementations at runtime.
      */
     private static interface IPlatformStrategyFactoryStrategy 
     {
@@ -20,20 +20,12 @@ public class PlatformStrategyFactory
     }
 	
     /**
-     * Enumeration distinguishing platforms Android from plain ol' Java.
-     */
-    public enum PlatformType {
-    	ANDROID,
-    	PLAIN_JAVA
-    }
-    
-    /**
      * HashMap used to map strings containing the Java platform names
      * and dispatch the execute() method of the associated @a PlatformStrategy
      * implementation.
      */
-    private HashMap<PlatformType, IPlatformStrategyFactoryStrategy> mPlatformStrategyMap = 
-        new HashMap<PlatformType, IPlatformStrategyFactoryStrategy>();
+    private HashMap<String, IPlatformStrategyFactoryStrategy> mPlatformStrategyMap = 
+        new HashMap<String, IPlatformStrategyFactoryStrategy>();
 	
     /** 
      * Ctor that stores the objects that perform output for a
@@ -47,7 +39,7 @@ public class PlatformStrategyFactory
          * The "The Android Project" string maps to a command object
          * that creates an @a AndroidPlatformStrategy implementation.
          */
-        mPlatformStrategyMap.put(PlatformType.ANDROID,
+        mPlatformStrategyMap.put("The Android Project",
                                  new IPlatformStrategyFactoryStrategy() 
                                  {
                                      /** 
@@ -66,7 +58,20 @@ public class PlatformStrategyFactory
          * The "Sun Microsystems Inc." string maps to a command object
          * that creates an @a ConsolePlatformStrategy implementation.
          */
-        mPlatformStrategyMap.put(PlatformType.PLAIN_JAVA,
+        mPlatformStrategyMap.put("Sun Microsystems Inc.",
+                                 new IPlatformStrategyFactoryStrategy() 
+                                 {
+                                     public PlatformStrategy execute() 
+                                     {
+                                         return new ConsolePlatformStrategy(output);
+                                     }
+                                 });
+
+    	/** 
+         * The "Oracle Corporation" string maps to a command object
+         * that creates an @a ConsolePlatformStrategy implementation.
+         */
+        mPlatformStrategyMap.put("Oracle Corporation", 
                                  new IPlatformStrategyFactoryStrategy() 
                                  {
                                      public PlatformStrategy execute() 
@@ -77,33 +82,13 @@ public class PlatformStrategyFactory
     }
 
     /** 
-     * Returns the name of the platform in a string. e.g., Android or
-     * a JVM.
-     */
-    public static String platformName() 
-    {
-        return System.getProperty("java.specification.vendor");
-    }
-    
-    /** 
-     * Returns the type of the platformm e.g. Android or
-     * a JVM.
-     */
-    public static PlatformType platformType() {
-    	if(platformName().indexOf("Android") >= 0) 
-            return PlatformType.ANDROID;
-    	else
-            return PlatformType.PLAIN_JAVA;
-    }
-
-    /** 
      * Create a new @a PlatformStrategy object based on underlying Java
      * platform.
      */
     public PlatformStrategy makePlatformStrategy() 
     {
-        PlatformType type = platformType();
+        String name = System.getProperty("java.specification.vendor");
 
-        return mPlatformStrategyMap.get(type).execute();
+        return mPlatformStrategyMap.get(name).execute();
     }
 }

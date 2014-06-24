@@ -41,11 +41,9 @@ public class SimpleAtomicLongMultithreadedTest {
     static CountDownLatch mStopLatch;
 
     /**
-     * An instance of our implementation of SimpleAtomicLong, which is
-     * defined as "volatile" to ensure proper visibility of its fields
-     * after construction.
+     * An instance of our implementation of SimpleAtomicLong.
      */
-    static volatile SimpleAtomicLong mCounter;
+    static SimpleAtomicLong mCounter;
     
     /**
      * Runnable commands that use the mCounter methods
